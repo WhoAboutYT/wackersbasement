@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     displayOverlay();
-    fetchAnnouncement();
+    fetchAnnouncement("Bell Ringer! Please Open Your ChromeBooks and complete questions #1-5 about homeostatis and pH.");
 });
 
 function gotoUrl() {
