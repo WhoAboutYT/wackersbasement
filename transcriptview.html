@@ -8,37 +8,53 @@
 <body>
 
     <h1>Transcript Viewer</h1>
-    <div id="content">
+    
+    <p>Enter the Discord URL below to view the transcript:</p>
+
+    <!-- Input field for URL -->
+    <input type="text" id="urlInput" placeholder="Enter the Discord transcript URL here" style="width: 100%; padding: 10px;">
+    <button id="loadButton" style="padding: 10px;">Load Transcript</button>
+
+    <div id="content" style="margin-top: 20px;">
         <p>Loading transcript...</p>
     </div>
 
     <script>
-        // Function to load the transcript via iframe
+        // Function to load the transcript
         function loadTranscript() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const transcriptUrl = urlParams.get('url');  // Get the 'url' query parameter
-
+            const urlInput = document.getElementById('urlInput');
             const contentElement = document.getElementById('content');
-            
-            // If the 'url' query parameter is not provided
-            if (!transcriptUrl) {
+            const discordUrl = urlInput.value.trim();
+
+            // Check if the input URL is empty
+            if (!discordUrl) {
                 contentElement.innerHTML = "Error: No URL provided.";
                 return;
             }
 
-            // Create an iframe element and set the src to the Discord URL
+            // Basic validation to ensure it's a Discord URL
+            const regex = /^https:\/\/cdn\.discordapp\.com\/attachments\/\d+\/\d+\/.+\.html\?ex=[a-z0-9]+/;
+            if (!regex.test(discordUrl)) {
+                contentElement.innerHTML = "Error: Invalid Discord URL.";
+                return;
+            }
+
+            // Encode the URL to pass as a parameter in case there are special characters
+            const encodedUrl = encodeURIComponent(discordUrl);
+
+            // Create an iframe element to display the transcript
             const iframe = document.createElement('iframe');
-            iframe.src = transcriptUrl;
-            iframe.width = '100%';  // Make iframe take full width
-            iframe.height = '600px';  // Set a fixed height for the iframe
+            iframe.src = decodeURIComponent(encodedUrl);  // Decode URL here
+            iframe.width = '100%';  // Full width
+            iframe.height = '600px';  // Fixed height
             iframe.style.border = 'none';  // Remove iframe border
 
-            contentElement.innerHTML = '';  // Clear existing content
-            contentElement.appendChild(iframe);  // Add the iframe to the page
+            contentElement.innerHTML = '';  // Clear the previous content
+            contentElement.appendChild(iframe);  // Add iframe to display the transcript
         }
 
-        // Load the transcript when the page is ready
-        loadTranscript();
+        // Event listener for the button click to load the transcript
+        document.getElementById('loadButton').addEventListener('click', loadTranscript);
     </script>
 
 </body>
