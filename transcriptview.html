@@ -8,41 +8,36 @@
 <body>
 
     <h1>Transcript Viewer</h1>
-    
-    <div id="content"></div>
+    <div id="content">
+        <p>Loading transcript...</p>
+    </div>
 
     <script>
-        // Function to fetch and display the transcript from the URL provided in the query string
+        // Function to load the transcript via iframe
         function loadTranscript() {
-            // Get the URL parameter from the query string (e.g., ?url=https://...)
             const urlParams = new URLSearchParams(window.location.search);
-            const transcriptUrl = urlParams.get('url');  // The 'url' query parameter
-            
+            const transcriptUrl = urlParams.get('url');  // Get the 'url' query parameter
+
             const contentElement = document.getElementById('content');
             
+            // If the 'url' query parameter is not provided
             if (!transcriptUrl) {
-                contentElement.textContent = "Error: No URL provided.";  // Error if no URL is given
+                contentElement.innerHTML = "Error: No URL provided.";
                 return;
             }
-            
-            // Fetch the transcript from the URL
-            fetch(transcriptUrl)
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();  // Assuming the transcript is plain text
-                    } else {
-                        throw new Error("Failed to fetch transcript");
-                    }
-                })
-                .then(data => {
-                    contentElement.textContent = data;  // Display the transcript content
-                })
-                .catch(error => {
-                    contentElement.textContent = `Error: Unable to load the transcript. ${error.message}`;
-                });
+
+            // Create an iframe element and set the src to the Discord URL
+            const iframe = document.createElement('iframe');
+            iframe.src = transcriptUrl;
+            iframe.width = '100%';  // Make iframe take full width
+            iframe.height = '600px';  // Set a fixed height for the iframe
+            iframe.style.border = 'none';  // Remove iframe border
+
+            contentElement.innerHTML = '';  // Clear existing content
+            contentElement.appendChild(iframe);  // Add the iframe to the page
         }
 
-        // Call the function to load the transcript when the page is ready
+        // Load the transcript when the page is ready
         loadTranscript();
     </script>
 
