@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcript Viewer</title>
+</head>
+<body>
+
+    <h1>Transcript Viewer</h1>
+    
+    <div id="content"></div>
+
+    <script>
+        // Function to fetch and display the transcript from the URL provided in the query string
+        function loadTranscript() {
+            // Get the URL parameter from the query string (e.g., ?url=https://...)
+            const urlParams = new URLSearchParams(window.location.search);
+            const transcriptUrl = urlParams.get('url');  // The 'url' query parameter
+            
+            const contentElement = document.getElementById('content');
+            
+            if (!transcriptUrl) {
+                contentElement.textContent = "Error: No URL provided.";  // Error if no URL is given
+                return;
+            }
+            
+            // Fetch the transcript from the URL
+            fetch(transcriptUrl)
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();  // Assuming the transcript is plain text
+                    } else {
+                        throw new Error("Failed to fetch transcript");
+                    }
+                })
+                .then(data => {
+                    contentElement.textContent = data;  // Display the transcript content
+                })
+                .catch(error => {
+                    contentElement.textContent = `Error: Unable to load the transcript. ${error.message}`;
+                });
+        }
+
+        // Call the function to load the transcript when the page is ready
+        loadTranscript();
+    </script>
+
+</body>
+</html>
